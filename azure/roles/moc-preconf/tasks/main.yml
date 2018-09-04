@@ -90,7 +90,7 @@
     #  when: MOC_SECRET == ""
 
 - name: Autogenerate MOC secret 
-  script: "../files/key.sh {{ moc_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} moc_secret {{ MOC_SECRET }}"
+  script: "{{ role_path }}/files/key.sh {{ moc_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} moc_secret {{ MOC_SECRET }}"
   register: secret 
 - set_fact:
   MOC_SECRET: "{{ secret.stdout }}"
