@@ -15,7 +15,8 @@ resource "azurerm_resource_group" "poa" {
   
   #name     = "${var.prefix}${var.resource_group_name}"
   name_init     = "${var.prefix}${var.resource_group_name}"
-  name     = "${var.resource_group_name == "" ? var.prefix.random_pet.poa.id : var.prefix.var.resource_group_name}"
+  #name     = "${var.resource_group_name == "" ? var.prefix.random_pet.poa.id : var.prefix.var.resource_group_name}"
+  name     = "${var.resource_group_name == "" ? join(".", concat(var.prefix,random_pet.poa.id)) : join(".", concat(var.prefix,resource_group_name))}"
   location = "${var.region}"
 
   tags {
