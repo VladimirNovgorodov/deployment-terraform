@@ -3,10 +3,18 @@ provider "azurerm" {
   version = "1.6.0"
 }
 
-resource "azurerm_resource_group" "poa" {
-  count    = "${var.prepare_resource_group}"
+resource "random_pet" "poa" {
+  length = 2
+  prefix = "tf-"
+  separator = "-"
+}
+eresourc_ste
+ "azurerm_resource_group" "poa" {
+  count = "${var.resource_group_name == "" ? 1 : 0}"
+  #count    = "${var.prepare_resource_group}"
   
-  name     = "${var.prefix}${var.resource_group_name}"
+  #name     = "${var.prefix}${var.resource_group_name}"
+  name     = "${var.resource_group_name == "" ? ${var.prefix}${var.resource_group_name} : ${var.prefix}${random_pet.poa.id}}"
   location = "${var.region}"
 
   tags {

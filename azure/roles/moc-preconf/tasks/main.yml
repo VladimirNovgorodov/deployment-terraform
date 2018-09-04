@@ -129,6 +129,12 @@
     - set_fact:
          MOC_ADDRESS: "{{ MOC_ADDRESS_coded['content'] | b64decode }}"
 
+         #- name: Autogenerate netstat secret 
+         #  script: "{{ role_path }}/files/key.sh {{ netstat_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} netstat_secret {{ NETSTATS_SECRET }}"
+         #  register: secret 
+         #- set_fact:
+         #  NETSTATS_SECRET: "{{ secret.stdout }}"
+
 - name: Autogenerate netstat secret
   shell: "head /dev/urandom | tr -dc A-Za-z0-9 | head -c {{ netstat_secret_length }} | tee /home/{{ ansible_user }}/{{ NETWORK_NAME }}/netstat_secret"
   args:
@@ -136,14 +142,15 @@
   when: NETSTATS_SECRET == ""
 
 
-- name: Autogenerate netstat secret
-  block:
-    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
-      vars:
-        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/netstat_secret length={{ netstat_secret_length }} chars=ascii_letters,digits')  }}"
-      set_fact: 
-        NETSTAT_SECRET: "{{ pwd_alias }}"
-  when: NETSTAT_SECRET == ""
+<<<<<<< HEAD
+#- name: Autogenerate netstat secret
+#  block:
+#    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
+#      vars:
+#        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/netstat_secret length={{ netstat_secret_length }} chars=ascii_letters,digits')  }}"
+#      set_fact: 
+#        NETSTAT_SECRET: "{{ pwd_alias }}"
+#  when: NETSTAT_SECRET == ""
   
 - name: Save netstat secret to outputs
   copy:
@@ -160,6 +167,32 @@
     - set_fact:
          NETSTATS_SECRET: "{{ NETSTATS_SECRET_coded['content'] | b64decode }}"
   when: NETSTATS_SECRET == ""
+=======
+#- name: Autogenerate netstat secret
+#  block:
+#    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
+#      vars:
+#        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/netstat_secret length={{ netstat_secret_length }} chars=ascii_letters,digits')  }}"
+#      set_fact: 
+#        NETSTAT_SECRET: "{{ pwd_alias }}"
+#  when: NETSTAT_SECRET == ""
+#  
+- name: Save netstat secret to outputs
+  copy:
+    content: "{{ NETSTATS_SECRET }}"
+    dest: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/netstat_secret"
+  when: NETSTATS_SECRET != ""
+  
+- name: Set local variable NETSTATS_SECRET
+  block:     
+    - slurp:
+        src: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/netstat_secret"
+      register:
+        NETSTATS_SECRET_coded
+    - set_fact:
+         NETSTATS_SECRET: "{{ NETSTATS_SECRET_coded['content'] | b64decode }}"
+  when: NETSTATS_SECRET == ""
+>>>>>>> a1a4414378cbae093de62de63bc9ab81218bd6eb
     
 - name: Install reqired NPM modules
   shell: npm install
@@ -205,6 +238,14 @@
   stat:
     path: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/gwcert.pfx"
   register: cert_file_check
+
+- name: Autogenerate cert secret 
+  block:
+    - script: "{{ role_path }}/files/key.sh {{ cert_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} cert_secret {{ cert_secret }}"
+      register: secret 
+    - set_fact:
+      cert_secret: "{{ secret.stdout }}"
+  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
   
 - name: Autogenerate cert secret
   shell: "head /dev/urandom | tr -dc A-Za-z0-9 | head -c {{ cert_secret_length }} | tee /home/{{ ansible_user }}/{{ NETWORK_NAME }}/cert_secret"
@@ -213,14 +254,14 @@
   when: not cert_file_check.stat.exists and bootnode_balanced_count>0
 
 
-- name: Autogenerate cert secret
-  block:
-    - name: Cert file doesn't exist - generate
-      vars:
-        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/cert_secret length={{ cert_secret_length }} chars=ascii_letters,digits')  }}"
-      set_fact: 
-        cert_secret: "{{ pwd_alias }}"
-  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
+  #- name: Autogenerate cert secret
+  #  block:
+  #    - name: Cert file doesn't exist - generate
+  #      vars:
+  #        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/cert_secret length={{ cert_secret_length }} chars=ascii_letters,digits')  }}"
+  #      set_fact: 
+  #        cert_secret: "{{ pwd_alias }}"
+  #  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
 
 - name: Register cert_secret variable
   block:     
