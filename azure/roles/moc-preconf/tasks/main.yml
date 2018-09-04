@@ -190,7 +190,6 @@
     - set_fact:
          NETSTATS_SECRET: "{{ NETSTATS_SECRET_coded['content'] | b64decode }}"
   when: NETSTATS_SECRET == ""
->>>>>>> a1a4414378cbae093de62de63bc9ab81218bd6eb
     
 - name: Install reqired NPM modules
   shell: npm install
