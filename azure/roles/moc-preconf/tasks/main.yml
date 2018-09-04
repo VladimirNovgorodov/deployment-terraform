@@ -74,26 +74,26 @@
     path: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/validator-keys"
     state: directory
 
-    #- name: Autogenerate MOC secret
-    #  shell: "head /dev/urandom | tr -dc A-Za-z0-9 | head -c {{ moc_secret_length }} | tee /home/{{ ansible_user }}/{{ NETWORK_NAME }}/moc_secret"
-    #  args:
-    #    creates: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/moc_secret"
-    #  when: MOC_SECRET == ""
+- name: Autogenerate MOC secret
+  shell: "head /dev/urandom | tr -dc A-Za-z0-9 | head -c {{ moc_secret_length }} | tee /home/{{ ansible_user }}/{{ NETWORK_NAME }}/moc_secret"
+  args:
+    creates: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/moc_secret"
+  when: MOC_SECRET == ""
 
-    #- name: Autogenerate MOC secret
-    #  block:
-    #    - name: MOC_SECRET empty - generate MOC_SECRET
-    #      vars:
-    #        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/moc_secret length={{ moc_secret_length }} chars=ascii_letters,digits')  }}"
-    #      set_fact: 
-    #        MOC_SECRET: "{{ pwd_alias }}"
-    #  when: MOC_SECRET == ""
+  #- name: Autogenerate MOC secret
+  #  block:
+  #    - name: MOC_SECRET empty - generate MOC_SECRET
+  #      vars:
+  #        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/moc_secret length={{ moc_secret_length }} chars=ascii_letters,digits')  }}"
+  #      set_fact: 
+  #        MOC_SECRET: "{{ pwd_alias }}"
+  #  when: MOC_SECRET == ""
 
-- name: Autogenerate MOC secret 
-  script: "{{ role_path }}/files/key.sh {{ moc_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} moc_secret {{ MOC_SECRET }}"
-  register: secret 
-- set_fact:
-  MOC_SECRET: "{{ secret.stdout }}"
+    #- name: Autogenerate MOC secret 
+    #  script: "{{ role_path }}/files/key.sh {{ moc_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} moc_secret {{ MOC_SECRET }}"
+    #  register: secret 
+    #- set_fact:
+    #  MOC_SECRET: "{{ secret.stdout }}"
 
 - name: Download terraform repo
   git:
@@ -106,14 +106,14 @@
   npm:
     path: /home/{{ ansible_user }}/deployment-terraform/helper-scripts/key-generator/ 
     
-    #- name: Set local variable MOC_SECRET
-    #  block:     
-    #    - slurp:
-    #        src: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/moc_secret"
-    #      register:
-    #        MOC_SECRET_coded
-    #    - set_fact:
-    #         MOC_SECRET: "{{ MOC_SECRET_coded['content'] | b64decode }}"
+- name: Set local variable MOC_SECRET
+  block:     
+    - slurp:
+        src: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/moc_secret"
+      register:
+        MOC_SECRET_coded
+    - set_fact:
+         MOC_SECRET: "{{ MOC_SECRET_coded['content'] | b64decode }}"
 
 - name: Generate MOC keypair
   shell: "MOC_SECRET={{ MOC_SECRET }} NETWORK_NAME=/home/{{ ansible_user }}/{{ NETWORK_NAME }}/ node /home/{{ ansible_user }}/deployment-terraform/helper-scripts/key-generator/script.js"
@@ -136,15 +136,15 @@
   when: NETSTATS_SECRET == ""
 
 
-#- name: Autogenerate netstat secret
-#  block:
-#    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
-#      vars:
-#        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/netstat_secret length={{ netstat_secret_length }} chars=ascii_letters,digits')  }}"
-#      set_fact: 
-#        NETSTAT_SECRET: "{{ pwd_alias }}"
-#  when: NETSTAT_SECRET == ""
-#  
+- name: Autogenerate netstat secret
+  block:
+    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
+      vars:
+        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/netstat_secret length={{ netstat_secret_length }} chars=ascii_letters,digits')  }}"
+      set_fact: 
+        NETSTAT_SECRET: "{{ pwd_alias }}"
+  when: NETSTAT_SECRET == ""
+  
 - name: Save netstat secret to outputs
   copy:
     content: "{{ NETSTATS_SECRET }}"
@@ -213,14 +213,14 @@
   when: not cert_file_check.stat.exists and bootnode_balanced_count>0
 
 
-#- name: Autogenerate cert secret
-#  block:
-#    - name: Cert file doesn't exist - generate
-#      vars:
-#        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/cert_secret length={{ cert_secret_length }} chars=ascii_letters,digits')  }}"
-#      set_fact: 
-#        cert_secret: "{{ pwd_alias }}"
-#  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
+- name: Autogenerate cert secret
+  block:
+    - name: Cert file doesn't exist - generate
+      vars:
+        pwd_alias: "{{ lookup('password', '/home/{{ ansible_user  }}/{{ network_name  }}/cert_secret length={{ cert_secret_length }} chars=ascii_letters,digits')  }}"
+      set_fact: 
+        cert_secret: "{{ pwd_alias }}"
+  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
 
 - name: Register cert_secret variable
   block:     
