@@ -142,7 +142,6 @@
   when: NETSTATS_SECRET == ""
 
 
-<<<<<<< HEAD
 #- name: Autogenerate netstat secret
 #  block:
 #    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
@@ -167,7 +166,6 @@
     - set_fact:
          NETSTATS_SECRET: "{{ NETSTATS_SECRET_coded['content'] | b64decode }}"
   when: NETSTATS_SECRET == ""
-=======
 #- name: Autogenerate netstat secret
 #  block:
 #    - name: NETSTAT_SECRET empty - generate NETSTAT_SECRET
