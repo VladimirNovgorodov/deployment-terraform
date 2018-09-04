@@ -8,13 +8,14 @@ resource "random_pet" "poa" {
   prefix = "tf-"
   separator = "-"
 }
-eresourc_ste
- "azurerm_resource_group" "poa" {
+
+resource "azurerm_resource_group" "poa" {
   count = "${var.resource_group_name == "" ? 1 : 0}"
   #count    = "${var.prepare_resource_group}"
   
   #name     = "${var.prefix}${var.resource_group_name}"
-  name     = "${var.resource_group_name == "" ? ${var.prefix}${random_pet.poa.id} : ${var.prefix}${var.resource_group_name}}"
+  name_init     = "${var.prefix}${var.resource_group_name}"
+  name     = "${var.resource_group_name == "" ? var.prefix.random_pet.poa.id : var.prefix.var.resource_group_name}"
   location = "${var.region}"
 
   tags {
