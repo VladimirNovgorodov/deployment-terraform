@@ -236,13 +236,13 @@
     path: "/home/{{ ansible_user }}/{{ NETWORK_NAME }}/gwcert.pfx"
   register: cert_file_check
 
-- name: Autogenerate cert secret 
-  block:
-    - script: "{{ role_path }}/files/key.sh {{ cert_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} cert_secret {{ cert_secret }}"
-      register: secret 
-    - set_fact:
-      cert_secret: "{{ secret.stdout }}"
-  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
+  #- name: Autogenerate cert secret 
+  #  block:
+  #    - script: "{{ role_path }}/files/key.sh {{ cert_secret_length }} {{ ansible_user }} {{ NETWORK_NAME }} cert_secret {{ cert_secret }}"
+  #      register: secret 
+  #    - set_fact:
+  #      cert_secret: "{{ secret.stdout }}"
+  #  when: not cert_file_check.stat.exists and bootnode_balanced_count>0
   
 - name: Autogenerate cert secret
   shell: "head /dev/urandom | tr -dc A-Za-z0-9 | head -c {{ cert_secret_length }} | tee /home/{{ ansible_user }}/{{ NETWORK_NAME }}/cert_secret"
