@@ -14,7 +14,7 @@ eresourc_ste
   #count    = "${var.prepare_resource_group}"
   
   #name     = "${var.prefix}${var.resource_group_name}"
-  name     = "${var.resource_group_name == "" ? ${var.prefix}${var.resource_group_name} : ${var.prefix}${random_pet.poa.id}}"
+  name     = "${var.resource_group_name == "" ? ${var.prefix}${random_pet.poa.id} : ${var.prefix}${var.resource_group_name}}"
   location = "${var.region}"
 
   tags {
