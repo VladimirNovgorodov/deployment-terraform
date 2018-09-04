@@ -3,7 +3,8 @@ DEPLOYMENT_PLAYBOOKS: https://github.com/poanetwork/deployment-playbooks.git
 #DEPLOYMENT_TERRAFORM: https://github.com/poanetwork/deployment-terraform.git
 DEPLOYMENT_TERRAFORM: https://github.com/VladimirNovgorodov/deployment-terraform.git
 DEPLOYMENT_PLAYBOOKS_BRANCH: master
-DEPLOYMENT_TERRAFORM_BRANCH: master
+#DEPLOYMENT_TERRAFORM_BRANCH: master
+DEPLOYMENT_TERRAFORM_BRANCH: dev
 POA_CONSENSUS_CONTRACTS: https://github.com/poanetwork/poa-network-consensus-contracts.git
 terraform_version: 0.11.7
 node_version: 8
