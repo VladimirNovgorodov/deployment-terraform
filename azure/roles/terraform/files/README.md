@@ -97,3 +97,4 @@ When the infrastructure is no longer needed run
 cd playbooks-terraform/azure/roles/terraform/files
 yes | terraform destroy
 ```
+.
