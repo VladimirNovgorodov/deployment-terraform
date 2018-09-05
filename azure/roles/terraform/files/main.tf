@@ -10,7 +10,7 @@ resource "random_pet" "poa" {
 
 resource "azurerm_resource_group" "poa" {
   count = "${var.resource_group_name == "" ? 1 : 0}"
-  name     = "${var.resource_group_name == "" ? join("", concat(var.prefix,random_pet.poa.id)) : join("", concat(var.prefix,resource_group_name))}"
+  name     = "${var.resource_group_name == "" ? join("", concat(list(var.prefix),list(random_pet.poa.id)) : join("", concat(list(var.prefix),list(resource_group_name))}"
   location = "${var.region}"
 
   tags {
